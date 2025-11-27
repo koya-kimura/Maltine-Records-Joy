@@ -1,22 +1,30 @@
 import p5 from 'p5';
+import { SceneManager } from './core/sceneManager';
+import { EffectManager } from './core/effectManager';
 import { JoyConManager } from './joycon/JoyConManager';
-import { MainScene } from './scene/MainScene';
 
 // JoyConManagerのインスタンスを作成
+const sceneManager = new SceneManager();
+const effectManager = new EffectManager();
 const joycon = new JoyConManager();
-let mainScene: MainScene;
 
 const sketch = (p: p5) => {
-    p.setup = () => {
-        p.createCanvas(p.windowWidth, p.windowHeight);
+    p.setup = async () => {
+        p.createCanvas(p.windowWidth, p.windowHeight, p.WEBGL);
+        sceneManager.init(p);
 
-        // メインシーンを初期化
-        mainScene = new MainScene(p, joycon);
+        await effectManager.load(
+            p,
+            "/shader/post.vert",
+            "/shader/post.frag",
+        );
     };
 
     p.draw = () => {
-        // メインシーンの描画
-        mainScene.draw();
+        sceneManager.update(p);
+        sceneManager.draw(p);
+
+        effectManager.apply(p, sceneManager.getTexture());
 
         // JoyConManagerの状態を更新（draw末尾で実行) =============
         joycon.update();
@@ -24,9 +32,13 @@ const sketch = (p: p5) => {
 
     p.windowResized = () => {
         p.resizeCanvas(p.windowWidth, p.windowHeight);
+        sceneManager.resize(p);
     };
 
     p.keyPressed = () => {
+        if (p.keyCode === 32) {
+            p.fullscreen(true);
+        }
         // Rキーで再接続
         if (p.key === 'r' || p.key === 'R') {
             console.log('🔄 Rキーが押されました。再接続を試みます...');
@@ -36,3 +48,4 @@ const sketch = (p: p5) => {
 };
 
 new p5(sketch);
+
