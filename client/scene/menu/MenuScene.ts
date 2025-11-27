@@ -21,6 +21,7 @@ export class MenuScene {
     private spacing: number = 40;
     private onGameSelected: (gameId: string) => void;
     private onBackToStart: () => void;
+    private font: p5.Font | null = null;
 
     constructor(
         private p: p5,
@@ -39,6 +40,13 @@ export class MenuScene {
     }
 
     /**
+     * フォントを設定
+     */
+    setFont(font: p5.Font): void {
+        this.font = font;
+    }
+
+    /**
      * メニューの更新処理
      */
     update(): void {
@@ -49,6 +57,11 @@ export class MenuScene {
      * メニューをテクスチャに描画
      */
     drawToTexture(texture: p5.Graphics): void {
+        // フォントを適用
+        if (this.font) {
+            texture.textFont(this.font);
+        }
+
         texture.background(20, 20, 40);
 
         // タイトル

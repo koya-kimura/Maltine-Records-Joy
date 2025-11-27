@@ -8,6 +8,8 @@ const sceneManager = new SceneManager();
 const effectManager = new EffectManager();
 const joycon = new JoyConManager();
 
+let font: p5.Font;
+
 const sketch = (p: p5) => {
     p.setup = async () => {
         p.createCanvas(p.windowWidth, p.windowHeight, p.WEBGL);
@@ -18,6 +20,10 @@ const sketch = (p: p5) => {
             "/shader/post.vert",
             "/shader/post.frag",
         );
+        font = await p.loadFont("/font/misaki_gothic.ttf");
+
+        // フォントをSceneManagerに設定
+        sceneManager.setFont(font);
     };
 
     p.draw = () => {

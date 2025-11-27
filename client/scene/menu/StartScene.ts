@@ -8,9 +8,17 @@ export class StartScene {
     private onStart: () => void;
     private titleAlpha: number = 0;
     private fadeSpeed: number = 2;
+    private font: p5.Font | null = null;
 
     constructor(private p: p5, onStart: () => void) {
         this.onStart = onStart;
+    }
+
+    /**
+     * フォントを設定
+     */
+    setFont(font: p5.Font): void {
+        this.font = font;
     }
 
     /**
@@ -27,6 +35,11 @@ export class StartScene {
      * スタート画面をテクスチャに描画
      */
     drawToTexture(texture: p5.Graphics): void {
+        // フォントを適用
+        if (this.font) {
+            texture.textFont(this.font);
+        }
+
         // 背景グラデーション
         for (let i = 0; i < texture.height; i++) {
             const inter = this.p.map(i, 0, texture.height, 0, 1);

@@ -69,6 +69,17 @@ export class SceneManager {
         return texture;
     }
 
+    // setFont はフォントを全てのシーンに設定する
+    setFont(font: p5.Font): void {
+        if (this.startScene) {
+            this.startScene.setFont(font);
+        }
+        if (this.menuScene) {
+            this.menuScene.setFont(font);
+        }
+        // RacingSceneは現在テキストを表示していないため、必要に応じて追加
+    }
+
     // switchScene はシーンを切り替える
     switchScene(sceneName: SceneType): void {
         this.currentScene = sceneName;
