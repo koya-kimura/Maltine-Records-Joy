@@ -13,7 +13,7 @@ export class RacingScene {
     constructor(private p: p5) {
         // Initialize game objects
         this.car = new Car(p);
-        this.courseMap = new CourseMap(p, p.width, p.height);
+        this.courseMap = new CourseMap(p);
     }
 
     /**

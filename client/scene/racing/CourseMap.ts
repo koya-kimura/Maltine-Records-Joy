@@ -12,11 +12,11 @@ export class CourseMap {
     private yn: number;
     private grid: number;
 
-    constructor(private p: p5, private width: number, private height: number) {
+    constructor(private p: p5) {
         this.course = convertTo2DArray(COURSE_DATA);
         this.grid = 10;
-        this.xn = Math.floor(width / this.grid);
-        this.yn = Math.floor(height / this.grid);
+        this.xn = Math.floor(p.width / this.grid);
+        this.yn = Math.floor(p.height / this.grid);
     }
 
     /**
@@ -31,14 +31,14 @@ export class CourseMap {
 
         for (let ix = 0; ix < this.xn; ix++) {
             for (let iy = 0; iy < this.yn; iy++) {
-                const w = this.width / this.xn;
-                const h = this.height / this.yn;
+                const w = tex.width / this.xn;
+                const h = tex.height / this.yn;
                 const x = w * ix + w * 0.5;
                 const y = h * iy + h * 0.5;
 
                 // Map screen coordinates to normalized coordinates
-                const sclx = this.p.map(x, 0, this.width, 1, 0);
-                const scly = this.p.map(y, 0, this.height, 1, 0);
+                const sclx = this.p.map(x, 0, tex.width, 1, 0);
+                const scly = this.p.map(y, 0, tex.height, 1, 0);
 
                 // Calculate perspective projection
                 const l = new Vec2(viewLength, 0.0)
