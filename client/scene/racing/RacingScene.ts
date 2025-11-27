@@ -9,11 +9,27 @@ import { CourseMap } from './CourseMap';
 export class RacingScene {
     private car: Car;
     private courseMap: CourseMap;
+    private onBackToMenu: (() => void) | null = null;
+    private onBackToStart: (() => void) | null = null;
 
     constructor(private p: p5) {
         // Initialize game objects
         this.car = new Car(p);
         this.courseMap = new CourseMap(p);
+    }
+
+    /**
+     * Set callback for returning to menu
+     */
+    setOnBackToMenu(callback: () => void): void {
+        this.onBackToMenu = callback;
+    }
+
+    /**
+     * Set callback for returning to start screen
+     */
+    setOnBackToStart(callback: () => void): void {
+        this.onBackToStart = callback;
     }
 
     /**
@@ -40,6 +56,24 @@ export class RacingScene {
 
         // Optionally draw the car for debugging
         // this.car.draw(texture);
+    }
+
+    /**
+     * Handle key input
+     */
+    keyPressed(keyCode: number, key: string): void {
+        // Hキーでメニューに戻る
+        if (key === 'h' || key === 'H') {
+            if (this.onBackToMenu) {
+                this.onBackToMenu();
+            }
+        }
+        // ESCキーでスタート画面に戻る
+        else if (keyCode === 27) {
+            if (this.onBackToStart) {
+                this.onBackToStart();
+            }
+        }
     }
 
     /**

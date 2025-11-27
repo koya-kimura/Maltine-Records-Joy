@@ -36,9 +36,14 @@ const sketch = (p: p5) => {
     };
 
     p.keyPressed = () => {
+        // フルスクリーン切り替え
         if (p.keyCode === 32) {
             p.fullscreen(true);
         }
+
+        // SceneManagerにキー入力を転送
+        sceneManager.keyPressed(p.keyCode, p.key);
+
         // Rキーで再接続
         if (p.key === 'r' || p.key === 'R') {
             console.log('🔄 Rキーが押されました。再接続を試みます...');
