@@ -17,6 +17,12 @@ export class Car {
     private viewDistance: number = 0.05;
     public angle: number = 0;
 
+    // Speed boost properties
+    private baseSpeed: number = 0.002;
+    private boostedSpeed: number = 0.004;
+    private boostDuration: number = 120; // frames
+    private boostTimer: number = 0;
+
     constructor(private p: p5) { }
 
     /**
@@ -58,6 +64,14 @@ export class Car {
                 this.z = 0;
                 this.isJumping = false;
             }
+        }
+
+        // Update speed boost timer
+        if (this.boostTimer > 0) {
+            this.boostTimer--;
+            this.moveSpeed = this.boostedSpeed;
+        } else {
+            this.moveSpeed = this.baseSpeed;
         }
     }
 
@@ -106,5 +120,20 @@ export class Car {
      */
     getZ(): number {
         return this.z;
+    }
+
+    /**
+     * Activate speed boost
+     */
+    activateBoost(): void {
+        this.boostTimer = this.boostDuration;
+    }
+
+    /**
+     * Check if currently boosted
+     * @returns True if boost is active
+     */
+    isBoosted(): boolean {
+        return this.boostTimer > 0;
     }
 }

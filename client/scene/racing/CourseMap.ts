@@ -3,6 +3,8 @@ import { Vec2 } from '../../util/Vec2';
 import { map, clampNorm, convertTo2DArray } from '../../util/mathUtils';
 import { COURSE_DATA } from './courseData';
 
+export type TileType = 0 | 1 | 2 | 3;
+
 /**
  * CourseMap class for rendering the pseudo-3D racing view
  */
@@ -66,6 +68,8 @@ export class CourseMap {
                     tex.fill(0, 200, 0);
                 } else if (num === 2) {
                     tex.fill(0, 50, 0);
+                } else if (num === 3) {
+                    tex.fill(255, 200, 0); // Yellow for speed boost items
                 }
 
                 tex.rectMode(this.p.CENTER);
@@ -84,6 +88,17 @@ export class CourseMap {
      */
     private perspectiveFunc(x: number, n: number = 0.05): number {
         return n / (1 - x);
+    }
+
+    /**
+     * Get the tile type at a specific position
+     * @param position Player position
+     * @returns The tile type (0-3)
+     */
+    getTileAt(position: Vec2): TileType {
+        const indexx = Math.floor(clampNorm(position.x) * this.course[0].length);
+        const indexy = Math.floor(clampNorm(position.y) * this.course.length);
+        return this.course[indexy][indexx] as TileType;
     }
 
     /**

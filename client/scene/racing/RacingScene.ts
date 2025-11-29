@@ -38,6 +38,14 @@ export class RacingScene {
      */
     update(joycon: JoyConManager): void {
         this.car.update(joycon);
+
+        // Check for item pickup (speed boost)
+        const tileType = this.courseMap.getTileAt(this.car.getPosition());
+        const isOnGround = this.car.getZ() === 0;
+
+        if (tileType === 3 && isOnGround) {
+            this.car.activateBoost();
+        }
     }
 
     /**
