@@ -77,6 +77,50 @@ export class CourseMap {
                 tex.rect(x, y, w, h);
             }
         }
+
+        let isShow = false;
+        for (let ix = 0; ix < this.xn; ix++) {
+            for (let iy = 0; iy < this.yn; iy++) {
+                const w = tex.width / this.xn;
+                const h = tex.height / this.yn;
+                const x = w * ix + w * 0.5;
+                const y = h * iy + h * 0.5;
+
+                // Map screen coordinates to normalized coordinates
+                const sclx = this.p.map(x, 0, tex.width, 1, 0);
+                const scly = this.p.map(y, 0, tex.height, 1, 0);
+
+                // Calculate perspective projection
+                const l = new Vec2(viewLength, 0.0)
+                    .rot(playerAngle)
+                    .rot(-viewAngle * 0.5);
+                const r = new Vec2(viewLength, 0.0)
+                    .rot(playerAngle)
+                    .rot(viewAngle * 0.5);
+
+                const k = map(playerZ, 0, 1, 0.05, 0.4);
+                const v1 = l.mult((1 - sclx) * this.perspectiveFunc(scly, k));
+                const v2 = r.mult(sclx * this.perspectiveFunc(scly, k));
+                const v = v1.add(v2).add(playerPosition);
+
+                // Map to course array indices
+                const indexx = Math.floor(clampNorm(v.x) * this.course[0].length);
+                const indexy = Math.floor(clampNorm(v.y) * this.course.length);
+
+                const d = this.p.dist(clampNorm(v.x), clampNorm(v.y), playerPosition.x, playerPosition.y);
+
+                const num = this.course[indexy][indexx];
+
+                if (num === 4 && !isShow) {
+                    const scl = map(d, 0, 1, 100, 0.1);
+                    tex.rectMode(this.p.CENTER);
+                    tex.fill(255, 0, 255);
+                    tex.noStroke();
+                    tex.rect(x, y, w * scl, h * scl);
+                    isShow = true;
+                }
+            }
+        }
     }
 
     /**
