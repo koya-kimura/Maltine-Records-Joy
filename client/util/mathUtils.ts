@@ -45,3 +45,15 @@ export function convertTo2DArray(array: string[]): number[][] {
 export function isOutOfBounds(x: number, y: number): boolean {
     return x < 0 || 1.0 < x || y < 0 || 1.0 < y;
 }
+
+export function map(x: number, inMin: number, inMax: number, outMin: number, outMax: number): number {
+    return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+}
+
+export function fract(x: number): number {
+    return x - Math.floor(x);
+}
+
+export function clamp(x: number, min: number, max: number): number {
+    return Math.max(min, Math.min(max, x));
+}   

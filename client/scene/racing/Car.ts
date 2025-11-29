@@ -1,6 +1,7 @@
 import p5 from 'p5';
 import { Vec2 } from '../../util/Vec2';
 import { isOutOfBounds } from '../../util/mathUtils';
+import { JoyConManager } from '../../joycon/JoyConManager';
 
 /**
  * Car class representing the player's vehicle
@@ -9,7 +10,10 @@ import { isOutOfBounds } from '../../util/mathUtils';
 export class Car {
     private x: number = 0.5;
     private y: number = 0.5;
-    private moveSpeed: number = 0.01;
+    private z: number = 0;
+    private vz: number = 0;
+    private isJumping: boolean = false;
+    private moveSpeed: number = 0.002;
     private viewDistance: number = 0.05;
     public angle: number = 0;
 
@@ -18,30 +22,41 @@ export class Car {
     /**
      * Update car state based on keyboard input
      */
-    update(): void {
+    update(joycon: JoyConManager): void {
         const viewFrontX = this.x + Math.cos(this.angle) * this.viewDistance;
         const viewFrontY = this.y + Math.sin(this.angle) * this.viewDistance;
 
         const viewBackX = this.x + Math.cos(this.angle + Math.PI) * this.viewDistance;
         const viewBackY = this.y + Math.sin(this.angle + Math.PI) * this.viewDistance;
 
-        if (this.p.keyIsPressed) {
-            // Rotation controls
-            if (this.p.key === 'ArrowLeft') {
-                this.angle += 0.01;
-            }
-            if (this.p.key === 'ArrowRight') {
-                this.angle -= 0.01;
-            }
+        // Rotation controls
+        if (joycon.isPressed("L")) {
+            this.angle += 0.01;
+        }
+        if (joycon.isPressed("R")) {
+            this.angle -= 0.01;
+        }
 
-            // Movement controls with boundary checking
-            if (this.p.key === 'ArrowUp' && !isOutOfBounds(viewFrontX, viewFrontY)) {
-                this.x += Math.cos(this.angle) * this.moveSpeed;
-                this.y += Math.sin(this.angle) * this.moveSpeed;
-            }
-            if (this.p.key === 'ArrowDown' && !isOutOfBounds(viewBackX, viewBackY)) {
-                this.x += Math.cos(this.angle + Math.PI) * this.moveSpeed;
-                this.y += Math.sin(this.angle + Math.PI) * this.moveSpeed;
+        // Movement controls with boundary checking
+        if (joycon.isPressed("A") && !isOutOfBounds(viewFrontX, viewFrontY)) {
+            this.x += Math.cos(this.angle) * this.moveSpeed;
+            this.y += Math.sin(this.angle) * this.moveSpeed;
+        }
+        if (joycon.isPressed("B") && !isOutOfBounds(viewBackX, viewBackY)) {
+            this.x += Math.cos(this.angle + Math.PI) * this.moveSpeed;
+            this.y += Math.sin(this.angle + Math.PI) * this.moveSpeed;
+        }
+
+        if (joycon.isJustPressed("ZR") && !this.isJumping) {
+            this.vz = 0.01;
+            this.isJumping = true;
+        }
+        if (this.isJumping) {
+            this.z += this.vz;
+            this.vz -= 0.001;
+            if (this.z <= 0) {
+                this.z = 0;
+                this.isJumping = false;
             }
         }
     }
@@ -83,5 +98,13 @@ export class Car {
      */
     getAngle(): number {
         return this.angle;
+    }
+
+    /**
+     * Get the car's z position
+     * @returns Z position
+     */
+    getZ(): number {
+        return this.z;
     }
 }

@@ -5,6 +5,7 @@ import { StartScene } from '../scene/menu/StartScene';
 import { MenuScene } from '../scene/menu/MenuScene';
 import { RacingScene } from '../scene/racing/RacingScene';
 import { BPMManager } from "../util/BPMManager";
+import { JoyConManager } from "../joycon/JoyConManager";
 
 type SceneType = 'start' | 'menu' | 'racing';
 
@@ -107,7 +108,7 @@ export class SceneManager {
     }
 
     // update はシーンの更新前にBPM状態を反映させる。
-    update(_p: p5): void {
+    update(_p: p5, joycon: JoyConManager): void {
         this.bpmManager.update();
 
         // 現在のシーンの更新処理
@@ -116,7 +117,7 @@ export class SceneManager {
         } else if (this.currentScene === 'menu' && this.menuScene) {
             this.menuScene.update();
         } else if (this.currentScene === 'racing' && this.racingScene) {
-            this.racingScene.update();
+            this.racingScene.update(joycon);
         }
     }
 

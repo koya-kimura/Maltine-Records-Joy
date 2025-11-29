@@ -1,6 +1,6 @@
 import p5 from 'p5';
 import { Vec2 } from '../../util/Vec2';
-import { gcd, clampNorm, convertTo2DArray } from '../../util/mathUtils';
+import { map, clampNorm, convertTo2DArray } from '../../util/mathUtils';
 import { COURSE_DATA } from './courseData';
 
 /**
@@ -25,7 +25,7 @@ export class CourseMap {
      * @param playerPosition Player's position as Vec2
      * @param playerAngle Player's viewing angle
      */
-    draw(tex: p5.Graphics, playerPosition: Vec2, playerAngle: number): void {
+    draw(tex: p5.Graphics, playerPosition: Vec2, playerZ: number, playerAngle: number): void {
         const viewAngle = Math.PI / 3;
         const viewLength = 0.35;
 
@@ -48,8 +48,9 @@ export class CourseMap {
                     .rot(playerAngle)
                     .rot(viewAngle * 0.5);
 
-                const v1 = l.mult((1 - sclx) * this.perspectiveFunc(scly));
-                const v2 = r.mult(sclx * this.perspectiveFunc(scly));
+                const k = map(playerZ, 0, 1, 0.05, 0.4);
+                const v1 = l.mult((1 - sclx) * this.perspectiveFunc(scly, k));
+                const v2 = r.mult(sclx * this.perspectiveFunc(scly, k));
                 const v = v1.add(v2).add(playerPosition);
 
                 // Map to course array indices

@@ -27,7 +27,7 @@ const sketch = (p: p5) => {
     };
 
     p.draw = () => {
-        sceneManager.update(p);
+        sceneManager.update(p, joycon);
         sceneManager.draw(p);
 
         effectManager.apply(p, sceneManager.getTexture());

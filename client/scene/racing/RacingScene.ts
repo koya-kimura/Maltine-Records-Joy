@@ -1,6 +1,7 @@
 import p5 from 'p5';
 import { Car } from './Car';
 import { CourseMap } from './CourseMap';
+import { JoyConManager } from '../../joycon/JoyConManager';
 
 /**
  * RacingScene - Main scene for the racing game
@@ -35,8 +36,8 @@ export class RacingScene {
     /**
      * Update game state
      */
-    update(): void {
-        this.car.update();
+    update(joycon: JoyConManager): void {
+        this.car.update(joycon);
     }
 
     /**
@@ -51,6 +52,7 @@ export class RacingScene {
         this.courseMap.draw(
             texture,
             this.car.getPosition(),
+            this.car.getZ(),
             this.car.getAngle()
         );
 
